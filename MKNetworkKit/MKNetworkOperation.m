@@ -407,8 +407,8 @@
 
 -(void) updateOperationBasedOnPreviousHeaders:(NSMutableDictionary*) headers {
     
-    NSString *lastModified = [headers objectForKey:@"Last-Modified"];
-    NSString *eTag = [headers objectForKey:@"ETag"];
+    NSString *lastModified = headers[@"Last-Modified"];
+    NSString *eTag = headers[@"ETag"];
     
     if(lastModified) {
         [self.request setHTTPMethod:@"HEAD"];
@@ -432,7 +432,7 @@
     [self setUsername:username password:password];
     NSString *base64EncodedString = [[[NSString stringWithFormat:@"%@:%@", self.username, self.password] dataUsingEncoding:NSUTF8StringEncoding] base64EncodedString];
     
-    [self addHeaders:[NSDictionary dictionaryWithObject:[NSString stringWithFormat:@"Basic %@", base64EncodedString] forKey:@"Authorization"]];
+    [self addHeaders:@{@"Authorization": [NSString stringWithFormat:@"Basic %@", base64EncodedString]}];
 }
 
 -(void) onCompletion:(MKNKResponseBlock) response onError:(MKNKErrorBlock) error {
@@ -602,8 +602,8 @@
         [self.filesToBePosted enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
             
             NSDictionary *thisFile = (NSDictionary*) obj;
-            [displayString appendFormat:@" -F \"%@=@%@;type=%@\"", [thisFile objectForKey:@"name"],
-             [thisFile objectForKey:@"filepath"], [thisFile objectForKey:@"mimetype"]];
+            [displayString appendFormat:@" -F \"%@=@%@;type=%@\"", thisFile[@"name"],
+             thisFile[@"filepath"], thisFile[@"mimetype"]];
         }];
         
         /* Not sure how to do this via curl
@@ -627,11 +627,9 @@
     
     [self.request setHTTPMethod:@"POST"];
     
-    NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:
-                          data, @"data",
-                          key, @"name",
-                          mimeType, @"mimetype",     
-                          nil];
+    NSDictionary *dict = @{@"data": data,
+                          @"name": key,
+                          @"mimetype": mimeType};
     
     [self.dataToBePosted addObject:dict];    
 }
@@ -645,11 +643,9 @@
     
     [self.request setHTTPMethod:@"POST"];
     
-    NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:
-                          filePath, @"filepath",
-                          key, @"name",
-                          mimeType, @"mimetype",     
-                          nil];
+    NSDictionary *dict = @{@"filepath": filePath,
+                          @"name": key,
+                          @"mimetype": mimeType};
     
     [self.filesToBePosted addObject:dict];    
 }
@@ -681,12 +677,12 @@
         NSString *thisFieldString = [NSString stringWithFormat:
                                      @"--%@\r\nContent-Disposition: form-data; name=\"%@\"; filename=\"%@\"\r\nContent-Type: %@\r\nContent-Transfer-Encoding: binary\r\n\r\n",
                                      boundary, 
-                                     [thisFile objectForKey:@"name"], 
-                                     [[thisFile objectForKey:@"filepath"] lastPathComponent], 
-                                     [thisFile objectForKey:@"mimetype"]];
+                                     thisFile[@"name"], 
+                                     [thisFile[@"filepath"] lastPathComponent], 
+                                     thisFile[@"mimetype"]];
         
         [body appendData:[thisFieldString dataUsingEncoding:[self stringEncoding]]];         
-        [body appendData: [NSData dataWithContentsOfFile:[thisFile objectForKey:@"filepath"]]];
+        [body appendData: [NSData dataWithContentsOfFile:thisFile[@"filepath"]]];
     }];
     
     [self.dataToBePosted enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
@@ -695,12 +691,12 @@
         NSString *thisFieldString = [NSString stringWithFormat:
                                      @"--%@\r\nContent-Disposition: form-data; name=\"%@\"; filename=\"%@\"\r\nContent-Type: %@\r\nContent-Transfer-Encoding: binary\r\n\r\n",
                                      boundary, 
-                                     [thisDataObject objectForKey:@"name"], 
-                                     [thisDataObject objectForKey:@"name"], 
-                                     [thisDataObject objectForKey:@"mimetype"]];
+                                     thisDataObject[@"name"], 
+                                     thisDataObject[@"name"], 
+                                     thisDataObject[@"mimetype"]];
         
         [body appendData:[thisFieldString dataUsingEncoding:[self stringEncoding]]];         
-        [body appendData:[thisDataObject objectForKey:@"data"]];
+        [body appendData:thisDataObject[@"data"]];
     }];
     
     if (postLength >= 1)
@@ -948,11 +944,11 @@
         
         // We have all this complicated cache handling since NSURLRequestReloadRevalidatingCacheData is not implemented
         // do cache processing only if the request is a "GET" method
-        NSString *lastModified = [httpHeaders objectForKey:@"Last-Modified"];
-        NSString *eTag = [httpHeaders objectForKey:@"ETag"];
-        NSString *expiresOn = [httpHeaders objectForKey:@"Expires"];
+        NSString *lastModified = httpHeaders[@"Last-Modified"];
+        NSString *eTag = httpHeaders[@"ETag"];
+        NSString *expiresOn = httpHeaders[@"Expires"];
         
-        NSString *contentType = [httpHeaders objectForKey:@"Content-Type"];
+        NSString *contentType = httpHeaders[@"Content-Type"];
         // if contentType is image, 
         
         NSDate *expiresOnDate = nil;
@@ -966,7 +962,7 @@
                 expiresOnDate = [[NSDate date] dateByAddingTimeInterval:kMKNetworkKitDefaultImageHeadRequestDuration];
         }
         
-        NSString *cacheControl = [httpHeaders objectForKey:@"Cache-Control"]; // max-age, must-revalidate, no-cache
+        NSString *cacheControl = httpHeaders[@"Cache-Control"]; // max-age, must-revalidate, no-cache
         NSArray *cacheControlEntities = [cacheControl componentsSeparatedByString:@","];
         
         for(NSString *substring in cacheControlEntities) {
@@ -977,7 +973,7 @@
                 NSString *maxAge = nil;
                 NSArray *array = [substring componentsSeparatedByString:@"="];
                 if([array count] > 1)
-                    maxAge = [array objectAtIndex:1];
+                    maxAge = array[1];
                 
                 expiresOnDate = [[NSDate date] dateByAddingTimeInterval:[maxAge intValue]];
             }
@@ -995,11 +991,11 @@
         
         // now remember lastModified, eTag and expires for this request in cache
         if(expiresOn)
-            [self.cacheHeaders setObject:expiresOn forKey:@"Expires"];
+            (self.cacheHeaders)[@"Expires"] = expiresOn;
         if(lastModified)
-            [self.cacheHeaders setObject:lastModified forKey:@"Last-Modified"];
+            (self.cacheHeaders)[@"Last-Modified"] = lastModified;
         if(eTag)
-            [self.cacheHeaders setObject:eTag forKey:@"ETag"];
+            (self.cacheHeaders)[@"ETag"] = eTag;
     }
 }
 

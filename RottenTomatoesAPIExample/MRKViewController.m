@@ -111,7 +111,7 @@
     
     // Configure the cell...
     Movie *thisMovie;
-    thisMovie = (Movie*)[movieObjectsArray objectAtIndex:indexPath.row];
+    thisMovie = (Movie*)movieObjectsArray[indexPath.row];
     
     UIImageView *imageView = (UIImageView *)[cell viewWithTag:1001];
     UIImageView *arrowImageView = (UIImageView *)[cell viewWithTag:1005];
@@ -172,7 +172,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     Movie *thisMovie;
-    thisMovie = (Movie*)[movieObjectsArray objectAtIndex:indexPath.row];
+    thisMovie = (Movie*)movieObjectsArray[indexPath.row];
     
     MRKMovieDetailViewController *movieDetailVC = [[MRKMovieDetailViewController alloc] initWithNibNameAndMovie:@"MRKMovieDetailViewController" bundle:nil withMovie:thisMovie];
     

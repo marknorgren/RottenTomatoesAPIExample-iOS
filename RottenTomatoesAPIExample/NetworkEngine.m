@@ -43,7 +43,7 @@
          /* process reponse here */
          NSDictionary *responseDict = [self getResponseDictionary:[completedOperation responseData]];
          //DLog(@"responseDict: %@", responseDict);
-         NSArray *movies = [responseDict objectForKey:@"movies"];
+         NSArray *movies = responseDict[@"movies"];
          NSMutableArray *movieModelObjects = [[NSMutableArray alloc] init ];
          //DLog(@"movies: %@", movies);
          for (id movie in movies) {
@@ -66,7 +66,7 @@
 -(NSString*) cacheDirectoryName {
     
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-    NSString *documentsDirectory = [paths objectAtIndex:0];
+    NSString *documentsDirectory = paths[0];
     NSString *cacheDirectoryName = [documentsDirectory stringByAppendingPathComponent:@"BoxOfficeMoviePosters"];
     return cacheDirectoryName;
 }

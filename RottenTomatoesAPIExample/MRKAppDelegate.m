@@ -25,7 +25,7 @@
 {
     /* FACEBOOK initialization, setup, check for access_token */
     // Initialize permissions
-    permissions = [[NSArray alloc] initWithObjects:@"read_stream", @"publish_stream", @"offline_access", nil];
+    permissions = @[@"read_stream", @"publish_stream", @"offline_access"];
     //facebook = [[Facebook alloc] initWithAppId:kFacebookAppID andDelegate:self];
     /*
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -66,7 +66,7 @@
     navController.title = @"Movies";
     navController.tabBarItem.image = [UIImage imageNamed:@"movietab"];
     
-    NSArray* controllers = [NSArray arrayWithObjects:navController, aboutViewController, nil];
+    NSArray* controllers = @[navController, aboutViewController];
     tabBarController.viewControllers = controllers;
     self.window.rootViewController = tabBarController;
     [self.window makeKeyAndVisible];

@@ -64,7 +64,7 @@
                                    style:UIBarButtonItemStyleBordered 
                                    target:self 
                                    action:@selector(fbShareAction)];
-    NSArray *barButtonItems = [[NSArray alloc] initWithObjects:tweetButton, fbShareButton, nil];
+    NSArray *barButtonItems = @[tweetButton, fbShareButton];
     //self.navigationItem.rightBarButtonItem = fbShareButton;
     self.navigationItem.rightBarButtonItems = barButtonItems;
     DLog(@"movieSynopsisLabel BEFORE****: %f,%f,%f,%f", 
@@ -130,7 +130,7 @@
     
     for(NSDictionary *castMember in currentMovie.cast) {
         UILabel *myLabel = [[UILabel alloc] initWithFrame:CGRectMake(20, y, width, height)];
-        myLabel.text = [NSString stringWithFormat:@"%@ as %@", [castMember valueForKey:@"name"], [[castMember valueForKey:@"characters"] objectAtIndex:0]];
+        myLabel.text = [NSString stringWithFormat:@"%@ as %@", [castMember valueForKey:@"name"], [castMember valueForKey:@"characters"][0]];
         
         [movieDetailScrollView addSubview:myLabel];
         
@@ -251,7 +251,7 @@
             ApplicationDelegate.facebook.accessToken = [defaults objectForKey:@"FBAccessTokenKey"];
             ApplicationDelegate.facebook.expirationDate = [defaults objectForKey:@"FBExpirationDateKey"];
         }
-        ApplicationDelegate.permissions =  [NSArray arrayWithObjects:@"publish_stream", @"offline_access", nil];
+        ApplicationDelegate.permissions =  @[@"publish_stream", @"offline_access"];
         if (![ApplicationDelegate.facebook isSessionValid])
         {
             [ApplicationDelegate.facebook authorize:ApplicationDelegate.permissions];
@@ -456,16 +456,16 @@
 - (void)request:(FBRequest *)request didLoad:(id)result {
     DLog(@"request didLoad");
     if ([result isKindOfClass:[NSArray class]]) {
-        result = [result objectAtIndex:0];
+        result = result[0];
     }
     // This callback can be a result of getting the user's basic
     // information or getting the user's permissions.
-    if ([result objectForKey:@"name"]) {
+    if (result[@"name"]) {
         // If basic information callback, set the UI objects to
         // display this.
         //nameLabel.text = [result objectForKey:@"name"];
         // Get the profile image
-        UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:[result objectForKey:@"pic"]]]];
+        UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:result[@"pic"]]]];
         
         // Resize, crop the image to make sure it is square and renders
         // well on Retina display

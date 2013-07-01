@@ -98,13 +98,13 @@ static NSOperationQueue *_sharedNetworkQueue;
             [self.reachability startNotifier];            
         }
         
-        if([headers objectForKey:@"User-Agent"] == nil) {
+        if(headers[@"User-Agent"] == nil) {
             
             NSMutableDictionary *newHeadersDict = [headers mutableCopy];
             NSString *userAgentString = [NSString stringWithFormat:@"%@/%@", 
-                                         [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleNameKey], 
-                                         [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleVersionKey]];
-            [newHeadersDict setObject:userAgentString forKey:@"User-Agent"];
+                                         [[NSBundle mainBundle] infoDictionary][(NSString *)kCFBundleNameKey], 
+                                         [[NSBundle mainBundle] infoDictionary][(NSString *)kCFBundleVersionKey]];
+            newHeadersDict[@"User-Agent"] = userAgentString;
             self.customHeaders = newHeadersDict;
         } else {
             self.customHeaders = headers;
@@ -309,7 +309,7 @@ static NSOperationQueue *_sharedNetworkQueue;
 
 -(NSData*) cachedDataForOperation:(MKNetworkOperation*) operation {
     
-    NSData *cachedData = [self.memoryCache objectForKey:[operation uniqueIdentifier]];
+    NSData *cachedData = (self.memoryCache)[[operation uniqueIdentifier]];
     if(cachedData) return cachedData;
     
     NSString *filePath = [[self cacheDirectoryName] stringByAppendingPathComponent:[operation uniqueIdentifier]];    
@@ -342,7 +342,7 @@ static NSOperationQueue *_sharedNetworkQueue;
             [self saveCacheData:[completedCacheableOperation responseData] 
                          forKey:uniqueId];
             
-            [self.cacheInvalidationParams setObject:completedCacheableOperation.cacheHeaders forKey:uniqueId];
+            (self.cacheInvalidationParams)[uniqueId] = completedCacheableOperation.cacheHeaders;
         }];
         
         double expiryTimeInSeconds = 0.0f;    
@@ -357,11 +357,11 @@ static NSOperationQueue *_sharedNetworkQueue;
                 
                 
                 NSString *uniqueId = [operation uniqueIdentifier];
-                NSMutableDictionary *savedCacheHeaders = [self.cacheInvalidationParams objectForKey:uniqueId];
+                NSMutableDictionary *savedCacheHeaders = (self.cacheInvalidationParams)[uniqueId];
                 // there is a cached version.
                 // this means, the current operation is a "GET"
                 if(savedCacheHeaders) {
-                    NSString *expiresOn = [savedCacheHeaders objectForKey:@"Expires"];
+                    NSString *expiresOn = savedCacheHeaders[@"Expires"];
                     NSDate *expiresOnDate = [NSDate dateFromRFC1123:expiresOn];
                     expiryTimeInSeconds = [expiresOnDate timeIntervalSinceNow];
                     
@@ -381,7 +381,7 @@ static NSOperationQueue *_sharedNetworkQueue;
         }
         else {
             // This operation is already being processed
-            MKNetworkOperation *queuedOperation = (MKNetworkOperation*) [_sharedNetworkQueue.operations objectAtIndex:index];
+            MKNetworkOperation *queuedOperation = (MKNetworkOperation*) (_sharedNetworkQueue.operations)[index];
             [queuedOperation updateHandlersFromOperation:operation];
         }
         
@@ -428,7 +428,7 @@ static NSOperationQueue *_sharedNetworkQueue;
 -(NSString*) cacheDirectoryName {
     
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-    NSString *documentsDirectory = [paths objectAtIndex:0];
+    NSString *documentsDirectory = paths[0];
     NSString *cacheDirectoryName = [documentsDirectory stringByAppendingPathComponent:MKNETWORKCACHE_DEFAULT_DIRECTORY];
     return cacheDirectoryName;
 }
@@ -443,7 +443,7 @@ static NSOperationQueue *_sharedNetworkQueue;
     for(NSString *cacheKey in [self.memoryCache allKeys])
     {
         NSString *filePath = [[self cacheDirectoryName] stringByAppendingPathComponent:cacheKey];
-        [[self.memoryCache objectForKey:cacheKey] writeToFile:filePath atomically:YES];        
+        [(self.memoryCache)[cacheKey] writeToFile:filePath atomically:YES];        
     }
     
     [self.memoryCache removeAllObjects];
@@ -455,7 +455,7 @@ static NSOperationQueue *_sharedNetworkQueue;
 
 -(void) saveCacheData:(NSData*) data forKey:(NSString*) cacheDataKey
 {    
-    [self.memoryCache setObject:data forKey:cacheDataKey];
+    (self.memoryCache)[cacheDataKey] = data;
     
     NSUInteger index = [self.memoryCacheKeys indexOfObject:cacheDataKey];
     if(index != NSNotFound)
@@ -466,7 +466,7 @@ static NSOperationQueue *_sharedNetworkQueue;
     if([self.memoryCacheKeys count] >= [self cacheMemoryCost])
     {
         NSString *lastKey = [self.memoryCacheKeys lastObject];        
-        NSData *data = [self.memoryCache objectForKey:lastKey];        
+        NSData *data = (self.memoryCache)[lastKey];        
         NSString *filePath = [[self cacheDirectoryName] stringByAppendingPathComponent:lastKey];
         
         if(![[NSFileManager defaultManager] fileExistsAtPath:filePath])

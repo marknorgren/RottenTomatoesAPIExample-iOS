@@ -215,6 +215,7 @@
 				7DDCFD8814E35E43003DC0AA /* facebook-ios-sdk */,
 				7D63552F14DB6AA300E3738A /* MKNetworkKit */,
 				7D6354F514DB670300E3738A /* RottenTomatoesAPIExample */,
+				7D6354F614DB670300E3738A /* Supporting Files */,
 				7D63557614DF23BB00E3738A /* images */,
 				7D63551614DB670300E3738A /* RottenTomatoesAPIExampleTests */,
 				7D6354EE14DB670300E3738A /* Frameworks */,
@@ -249,27 +250,22 @@
 		7D6354F514DB670300E3738A /* RottenTomatoesAPIExample */ = {
 			isa = PBXGroup;
 			children = (
-				7D63555B14DB772600E3738A /* MRKConstants.h */,
-				7D6354FE14DB670300E3738A /* MRKAppDelegate.h */,
-				7D6354FF14DB670300E3738A /* MRKAppDelegate.m */,
-				7D98A0F614E5814600C66743 /* MRKAboutViewController.h */,
-				7D98A0F714E5814600C66743 /* MRKAboutViewController.m */,
-				7D98A0F814E5814700C66743 /* MRKAboutViewController.xib */,
-				7D63550114DB670300E3738A /* MRKViewController.h */,
-				7D63550214DB670300E3738A /* MRKViewController.m */,
-				7D63550414DB670300E3738A /* MRKViewController_iPhone.xib */,
-				7D63550714DB670300E3738A /* MRKViewController_iPad.xib */,
-				7D56DB7614E0BAC400CD84A3 /* MRKMovieDetailViewController.h */,
-				7D56DB7714E0BAC400CD84A3 /* MRKMovieDetailViewController.m */,
-				7D56DB7814E0BAC400CD84A3 /* MRKMovieDetailViewController.xib */,
-				7D63556514DCAE9700E3738A /* Movie.h */,
-				7D63556614DCAE9700E3738A /* Movie.m */,
-				7D63555814DB6CD700E3738A /* NetworkEngine.h */,
-				7D63555914DB6CD700E3738A /* NetworkEngine.m */,
-				7D6354F614DB670300E3738A /* Supporting Files */,
+				7D87960A17811B96007131AE /* Model */,
+				7D87960B17811BB3007131AE /* Views */,
 				7D63557114DF1E0500E3738A /* MovieCustomTableViewCell.h */,
 				7D63557214DF1E0500E3738A /* MovieCustomTableViewCell.m */,
-				7D63557414DF1E6800E3738A /* MovieCustomTableViewCell.xib */,
+				7D98A0F614E5814600C66743 /* MRKAboutViewController.h */,
+				7D98A0F714E5814600C66743 /* MRKAboutViewController.m */,
+				7D6354FE14DB670300E3738A /* MRKAppDelegate.h */,
+				7D6354FF14DB670300E3738A /* MRKAppDelegate.m */,
+				7D63555B14DB772600E3738A /* MRKConstants.h */,
+				7D56DB7614E0BAC400CD84A3 /* MRKMovieDetailViewController.h */,
+				7D56DB7714E0BAC400CD84A3 /* MRKMovieDetailViewController.m */,
+				7D63550114DB670300E3738A /* MRKViewController.h */,
+				7D63550214DB670300E3738A /* MRKViewController.m */,
+				7D63550714DB670300E3738A /* MRKViewController_iPad.xib */,
+				7D63555814DB6CD700E3738A /* NetworkEngine.h */,
+				7D63555914DB6CD700E3738A /* NetworkEngine.m */,
 			);
 			path = RottenTomatoesAPIExample;
 			sourceTree = "<group>";
@@ -283,6 +279,7 @@
 				7D6354FD14DB670300E3738A /* RottenTomatoesAPIExample-Prefix.pch */,
 			);
 			name = "Supporting Files";
+			path = RottenTomatoesAPIExample;
 			sourceTree = "<group>";
 		};
 		7D63551614DB670300E3738A /* RottenTomatoesAPIExampleTests */ = {
@@ -367,6 +364,26 @@
 				7D63557714DF23CC00E3738A /* MoviePosterExample_mob.jpg */,
 			);
 			name = images;
+			sourceTree = "<group>";
+		};
+		7D87960A17811B96007131AE /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				7D63556514DCAE9700E3738A /* Movie.h */,
+				7D63556614DCAE9700E3738A /* Movie.m */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		7D87960B17811BB3007131AE /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				7D98A0F814E5814700C66743 /* MRKAboutViewController.xib */,
+				7D63550414DB670300E3738A /* MRKViewController_iPhone.xib */,
+				7D56DB7814E0BAC400CD84A3 /* MRKMovieDetailViewController.xib */,
+				7D63557414DF1E6800E3738A /* MovieCustomTableViewCell.xib */,
+			);
+			name = Views;
 			sourceTree = "<group>";
 		};
 		7DDCFD8814E35E43003DC0AA /* facebook-ios-sdk */ = {
@@ -675,6 +692,7 @@
 				GCC_PREFIX_HEADER = "RottenTomatoesAPIExample/RottenTomatoesAPIExample-Prefix.pch";
 				INFOPLIST_FILE = "RottenTomatoesAPIExample/RottenTomatoesAPIExample-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -686,6 +704,7 @@
 				GCC_PREFIX_HEADER = "RottenTomatoesAPIExample/RottenTomatoesAPIExample-Prefix.pch";
 				INFOPLIST_FILE = "RottenTomatoesAPIExample/RottenTomatoesAPIExample-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
